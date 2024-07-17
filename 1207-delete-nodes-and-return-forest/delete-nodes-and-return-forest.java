@@ -14,44 +14,34 @@
  * }
  */
 class Solution {
-    private Set<Integer> toDelete;
-    private List<TreeNode> result;
-    
+    private boolean[] s = new boolean[1001];
+    private List<TreeNode> ans = new ArrayList<>();
+
     public List<TreeNode> delNodes(TreeNode root, int[] to_delete) {
-        result = new ArrayList<>();
-        toDelete = new HashSet<>();
-        
-        for (int num : to_delete) {
-            toDelete.add(num);
+        for (int x : to_delete) {
+            s[x] = true;
         }
-        
-        root = deleteHelper(root);
-        
-        if (root != null) {
-            result.add(root);
+        if (dfs(root) != null) {
+            ans.add(root);
         }
-        
-        return result;
+        return ans;
     }
-    
-    private TreeNode deleteHelper(TreeNode root) {
+
+    private TreeNode dfs(TreeNode root) {
         if (root == null) {
             return null;
         }
-        
-        root.left = deleteHelper(root.left);
-        root.right = deleteHelper(root.right);
-        
-        if (toDelete.contains(root.val)) {
-            if (root.left != null) {
-                result.add(root.left);
-            }
-            if (root.right != null) {
-                result.add(root.right);
-            }
-            return null;
+        root.left = dfs(root.left);
+        root.right = dfs(root.right);
+        if (!s[root.val]) {
+            return root;
         }
-        
-        return root;
+        if (root.left != null) {
+            ans.add(root.left);
+        }
+        if (root.right != null) {
+            ans.add(root.right);
+        }
+        return null;
     }
 }
